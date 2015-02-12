@@ -1,5 +1,5 @@
 should = require('chai').should()
-csv    = require('../csv')
+csv = require('../csv')()
 
 describe 'getField() tests', ->
   it 'should return NULL for empty input',       -> should.not.exist(csv.getNextField('', 0))
@@ -25,4 +25,15 @@ describe 'parseCsv() tests', ->
   it 'should return all parsed data', ->
     expected = [['q', 'w', 'e'], ['a', 's', 'd']]
     result = csv.parseCsv('q,w,e\na,s,d')
+    result.should.deep.equal(expected)
+
+describe 'setting options', ->
+  tsv = require('../csv')({
+    fieldSeparator: '\t',
+    lineSeparators: ['\0'],
+    quote: '`'
+  })
+  it 'should parse TSV', ->
+    expected = [['q', 'w', 'e'], ['a', 's', 'd']]
+    result = tsv.parseCsv('q\t`w`\te\0a\ts\td')
     result.should.deep.equal(expected)
