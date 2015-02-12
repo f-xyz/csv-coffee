@@ -16,6 +16,62 @@ module.exports = (settings) ->
       config[key] = settings[key]
 
   ###
+    @param {string} csv
+    @returns {string[string[]]}
+  ###
+  parseCsv = (csv) ->
+    lines = []
+    i = 0
+    while i < csv.length
+      line = getNextLine(csv, i)
+      if line
+        fields = parseLine(line.result)
+        lines.push(fields);
+        i = line.pos
+    return lines
+    
+  ###
+    @param {string} x
+    @returns {string[]}
+  ###
+  parseLine = (x) ->
+    fields = []
+    i = 0
+    while i < x.length
+      field = getNextField(x, i)
+      if field
+        fields.push(field.result);
+        i = field.pos
+    return fields
+
+  ###
+    @param {string} x
+    @param {int} pos
+    @returns {{ result: string, pos: int }}
+  ###
+  getNextLine = (x, pos) ->
+    if pos >= x.length
+      return null
+
+    result = ''
+    mode = MODES.CHAR
+
+    for i in [pos...x.length]
+      char = x[i]
+
+      if mode == MODES.CHAR
+        if char in config.lineSeparators
+          mode = MODES.LINE_SEPARATOR
+        else
+          result += char
+
+      else if mode == MODES.LINE_SEPARATOR
+        if char !in config.lineSeparators
+          break
+
+    return { result, pos: i }
+    
+  ###
     @param {string} x
     @param {int} pos
     @returns {{ result: string, pos: int }}
@@ -59,61 +115,10 @@ module.exports = (settings) ->
 
     return { result, pos: i }
 
-  ###
-    @param {string} x
-    @param {int} pos
-    @returns {{ result: string, pos: int }}
-  ###
-  getNextLine = (x, pos) ->
-    if pos >= x.length
-      return null
-
-    result = ''
-    mode = MODES.CHAR
-
-    for i in [pos...x.length]
-      char = x[i]
-
-      if mode == MODES.CHAR
-        if char in config.lineSeparators
-          mode = MODES.LINE_SEPARATOR
-        else
-          result += char
-
-      else if mode == MODES.LINE_SEPARATOR
-        if char !in config.lineSeparators
-          break
-
-    return { result, pos: i }
-
-  ###
-    @param {string} x
-    @returns {string[]}
-  ###
-  parseLine = (x) ->
-    fields = []
-    i = 0
-    while i < x.length
-      field = getNextField(x, i)
-      if field
-        fields.push(field.result);
-        i = field.pos
-    return fields
-
-  ###
-    @param {string} csv
-    @returns {string[string[]]}
-  ###
-  parseCsv = (csv) ->
-    lines = []
-    i = 0
-    while i < csv.length
-      line = getNextLine(csv, i)
-      if line
-        fields = parseLine(line.result)
-        lines.push(fields);
-        i = line.pos
-    return lines
-
   # 'instance'
-  return { getNextField, getNextLine, parseLine, parseCsv }
+  return {
+    parseCsv,
+    parseLine, 
+    _getNextField: getNextField,
+    _getNextLine: getNextLine
+  }
