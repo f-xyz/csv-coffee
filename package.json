@@ -1,30 +1,22 @@
 {
   "name": "csv-coffee",
   "version": "0.1.0",
-  "description": "Very simple CSV parser written in CofeeScript and based on finite state machine.",
+  "description": "CSV parser in CoffeeScript.",
   "main": "csv.coffee",
-  "directories": {
-    "test": "test"
-  },
-  "dependencies": {
-    "chai": "~2.0.0"
-  },
   "devDependencies": {},
+  "dependencies": {
+    "chai": "^2.0.0"
+  },
   "scripts": {
-    "test": "mocha -R spec --compilers coffee:coffee-script/register"
+    "test": "mocha --compilers coffee:coffee-script/register && istanbul cover _mocha -- --compilers coffee:coffee-script/register"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/fantasticMrFox/csv-coffee.git"
   },
-  "keywords": [
-    "csv",
-    "coffee-script"
-  ],
-  "author": "andr",
-  "license": "ISC",
+  "author": "",
+  "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/fantasticMrFox/csv-coffee/issues"
-  },
-  "homepage": "https://github.com/fantasticMrFox/csv-coffee"
+  }
 }
